@@ -22,6 +22,8 @@ data: taskToSend
 console.log ('back from POST', response); 
 // - run get function if succesful
 getTasks(); 
+//empty inputs
+$('#taskInfoIn').val('')
 }).catch (function (err){
 console.log (err);
 alert ('error adding item');
@@ -39,13 +41,13 @@ console.log (response);
  let el = $('#taskOut');
 el.empty();
 for (let i=0; i< response.length; i++){
-//     // let completeStart =''; 
-//     // let completeStop ='';
-//     // if (response[i].complete){
-//     //     completeStart = '<background-color','yellow>'; 
-//     //     completeStop = '<background-color','yellow>'
-     
- el.append(`<li> Task: ${response[i].task}  ,  Complete:${response[i].complete}
+      let completedStart =''; 
+      let completedStop ='';
+      if (response[i].complete){
+     completedStart = '<strong>'; 
+     completedStop = '</strong>';
+}   
+ el.append(`<li> Task: ${response[i].task}  ,  Complete:${completedStart}${response[i].complete}${completedStop}
  <button class="completeButton" data-id="${response[i].id }">Complete</button>
 <button class="deleteButton" data-id="${response[i].id }">Delete</button>
 </li>`);
@@ -63,7 +65,7 @@ $.ajax({
     url: '/tasks?id=' + $(this).data('id')
 }).then (function(response){
 console.log (response); 
-getTasks();    
+getTasks();   
 }).catch (function(err){
     console.log(err); 
     alert('error marking task complete'); 
