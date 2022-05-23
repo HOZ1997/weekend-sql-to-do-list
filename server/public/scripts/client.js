@@ -1,17 +1,14 @@
-
-console.log('js');
-
 $(document).ready (onReady);
 
 function onReady(){
-console.log ('DOM ready');
+    getTasks();
     $('#addTaskin').on('click', addTask);
-    $('#markCompleteIn').on('click', markComplete );
-    $('#markDeleteIn').on('click', markDelete );
-  getTasks();
+    $('#taskOut').on('click', '.completeButton', markComplete );
+    $('#taskOut').on('click', '.deleteButton', markDelete );
 }
 
 function addTask (){
+console.log ('in addTask');    
 let taskToSend = {
   task: $('#taskInfoIn').val(),
   complete: $('#completeInfoIn').val()
@@ -32,29 +29,58 @@ alert ('error adding item');
 } // end add task
 
 function getTasks(){
- console.log ('in Get-Read tasks');
+ console.log ('in getTask Read');
  //ajax call to server to get tasks
  $.ajax({
     method:'GET',
     url:'/tasks'
  }).then (function(response){
-console.log ('back from /tasks GET', response);
-let el = $('#taskOut');
+console.log (response);
+ let el = $('#taskOut');
 el.empty();
-for (let i=0; i<response.length; i++){
-    el.append(`<li> ${response[i].task} ${response[i].complete}</li>`);
-    }
+for (let i=0; i< response.length; i++){
+//     // let completeStart =''; 
+//     // let completeStop ='';
+//     // if (response[i].complete){
+//     //     completeStart = '<background-color','yellow>'; 
+//     //     completeStop = '<background-color','yellow>'
+     
+ el.append(`<li> Task: ${response[i].task}  ,  Complete:${response[i].complete}
+ <button class="completeButton" data-id="${response[i].id }">Complete</button>
+<button class="deleteButton" data-id="${response[i].id }">Delete</button>
+</li>`);
+}
  }).catch(function(err){
      console.log(err);
-     //alert user of error
      alert('error getting tasks');
  }); 
-}
+}// end getTask
 
 function markComplete (){
-console.log ('mark task complete - Update/PUT', markComplete );
-}
+console.log ('in markComplete', $(this).data('id'));
+$.ajax({
+    method:'PUT',
+    url: '/tasks?id=' + $(this).data('id')
+}).then (function(response){
+console.log (response); 
+getTasks();    
+}).catch (function(err){
+    console.log(err); 
+    alert('error marking task complete'); 
+});
+}//end marking task complete 
 
 function markDelete(){
-console.log ('delete task - Delete', markDelete);
-}
+console.log ('in markDelete', $(this).data('id'));
+$.ajax({
+    method: 'DELETE',
+    url: '/tasks?id=' + $( this ).data('id')
+}).then( function( response ){
+    console.log( response );
+    getTasks();
+}).catch( function( err ){
+    console.log( err );
+    alert( 'error deleting item' );
+});
+} // end delete 
+
