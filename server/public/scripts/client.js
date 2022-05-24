@@ -22,7 +22,7 @@ data: taskToSend
 console.log ('back from POST', response); 
 // - run get function if succesful
 getTasks(); 
-//empty inputs
+//empty input
 $('#taskInfoIn').val('')
 }).catch (function (err){
 console.log (err);
@@ -44,12 +44,10 @@ for (let i=0; i< response.length; i++){
       let completedStart =''; 
       let completedStop ='';
       if (response[i].complete){
-     completedStart = '<strong>'; 
-     completedStop = '</strong>';
+     completedStart ='<strong>'; 
+     completedStop ='</strong>';
 }   
- el.append(`<li> Task: ${response[i].task}  ,  Complete:${completedStart}${response[i].complete}${completedStop}
- <button class="completeButton" data-id="${response[i].id }">Complete</button>
-<button class="deleteButton" data-id="${response[i].id }">Delete</button>
+ el.append(`<li>Task: ${response[i].task} ${completedStart} Completed:${response[i].complete}${completedStop} <button class="completeButton" data-id="${response[i].id }">Complete</button><button class="deleteButton" data-id="${response[i].id }">Delete</button>
 </li>`);
 }
  }).catch(function(err){
